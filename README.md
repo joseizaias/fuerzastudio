@@ -42,3 +42,5 @@ http://localhost:5000/api/posts/id: (PUT)
 - Delete a post of a specific id
 http://localhost:5000/api/posts/id: (DELETE)
 
+## Database
+- I used mongoDB Atlas.
