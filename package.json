@@ -5,6 +5,7 @@
   "main": "server.js",
   "scripts": {
     "dev": "nodemon src/routes/api/index.js",
+    "prod": "node src/routes/api/index.js",
     "test": "jest --watchAll"
   },
   "author": "jose izaias alcantara lima",
