@@ -1,0 +1,278 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Fuerza-Studio/node-challenge",
+        "description": "The project is a simple challenge to test your skills in building APIs using the Node.js framework.",
+        "contact": {
+            "email": "joseizaias@gmail.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://localhost:5000",
+            "description": "API to test your skills in building APIs using the Node."
+        }        
+    ],
+    "paths": {
+        "/api/login": {
+            "get": {
+                "description": "Generate JWT Token to allow the user to access the POST, PUT and DELETE routes.",
+                "summary": "Create JWT Token. The token expires after 90s.",
+                "tags": ["JWT Auth"],
+                "responses": {
+                    "200": {
+                        "description": "Create JWT token. It is used to allow Authorization on PUT, POST and DELETE. ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }                                        
+                                    },
+                                    "description": "Bearer JWT token. It needs to access PUT, POST and DELETE. Paste in 'authorization' key Header."
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/posts": {
+            "get": {
+                "description": "Lists all posts.",
+                "summary": "Lists all posts with pages and limit.",
+                "tags": ["Posts"],
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "page number to access",
+                        "required": false    
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "number of posts per page",
+                        "required": false    
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show all posts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/post"
+                                    }                                    
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+
+            "post": {
+                "summary": "Create new posts.",
+                "description": "This route creates a new post. It is necessary to create in Hearders the key 'Authorization' with the JWT token.",
+                "tags":["Posts"],
+                "security": [{ "bearerAuth": [] }],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/post"
+                            },
+                            "examples": {
+                                "post": {
+                                    "value": {
+                                        "_id": "6201e0af4e64b208be56152a - Creates automatically",
+                                        "title": "How to do something that...",
+                                        "body": "To do this, you need to...",
+                                        "tags": ["First of all, you need, ...", "Second, maybe it is batter...", "Finally, That it is!"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "401": {
+                        "description": "Not Authorized to access"
+                    },
+                    "400": {
+                        "description": [
+                            "Please add a body, Please add a title",
+                            "Duplicate field value entered"
+                        ]
+                    },
+                    "201": {
+                        "description": "Created a new post",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/post"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        "/api/posts/{id}": {
+            "get": {
+                "description": "Lists a post by its _id.",
+                "summary": "Lists a post searching by its _id.",
+                "tags": ["Posts"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Post's id (uudi) to search in the database",
+                        "required": true    
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show an expecific post _id' post.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/post"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Post not found with id of <_id's post>"
+                    }
+                }
+            },
+
+            "put": {
+                "description": "Update a post by its _id. It is necessary to create in Hearders the key 'Authorization' with the JWT token.",
+                "summary": "Update a post searching by its _id.",
+                "tags": ["Posts"],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Update a post by its post's id (uudi).",
+                        "required": true    
+                    }
+                ],
+                "security": [{ "bearerAuth": [] }],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/post"
+                            },
+                            "examples": {
+                                "post": {
+                                    "value": {
+                                        "title": "Title updated...",
+                                        "body": "Body Updated...",
+                                        "tags": ["First!", "Second!", "Third!"]
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "The post with _id was updated.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/post"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not Authorized to access"
+                    },
+                    "404": {
+                        "description": "Post not found with id of <_id's post>"
+                    }
+                }
+            },
+
+            "delete": {
+                "description": "Delete a post by its _id. It is necessary to create in Hearders the key 'Authorization' with the JWT token.",
+                "summary": "Delete a post searching by its _id.",
+                "tags": ["Posts"],
+                "security": [{ "bearerAuth": [] }],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Delete a post by its post's id (uudi).",
+                        "required": true    
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The post with _id was deleted.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "$ref": "#/components/schemas/post"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Not Authorized to access"
+                    },
+                    "404": {
+                        "description": "Post not found with id of <_id's post>"
+                    }
+                }
+            }
+        }
+    },
+
+    "components": {
+        "schemas": {
+            "post": {
+                "type": "object",
+                "properties": {
+                    "_id": {
+                        "type": "uuid"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "tags": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "scheme": "bearer",
+                "bearerFormat": "JWT"
+            }
+        }
+    }
+}
