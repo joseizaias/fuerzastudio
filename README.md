@@ -6,6 +6,6 @@
 
 - prerequisites:
 - install NodeJS version 16
-- Download the file from Github on a folder.
+- Download the ZIP file from Github on a folder.
 - Put the files in a folder and execute => npm install
 - To run the app, go to the app folder and execute: => npm run dev
